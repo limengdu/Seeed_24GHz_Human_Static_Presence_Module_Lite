@@ -1,7 +1,18 @@
-#ifndef _RADAR_H__
-#define _RADAR_H__
+#ifndef _HUMANSTATICLITE_H__
+#define _HUMANSTATICLITE_H__
 
-#define MESSAGE_HEAD 0x55       //Data frame header
+#define MESSAGE_HEAD1 0x53       //Data frame header1
+#define MESSAGE_HEAD2 0x59       //Data frame header2
+
+#define MESSAGE_END1 0x54
+#define MESSAGE_END2 0x43
+
+
+
+
+
+
+
 #define ACTIVE_REPORT 0x04      //Proactive reporting
 
 #define REPORT_RADAR 0x03       //Report radar information
@@ -53,19 +64,16 @@
 
 #define SLEEP_SCORE 0x01        //Sleep quality score
 
-class SleepBreathingRadarBLE{
+class HumanStaticLite{
     private:
-        
-    public:
-        const byte MsgLen = 12;
-        byte dataLen = 12;
-        byte Msg[12];
+        byte dataLen;
         boolean newData = false;
+        char Msg[20];
+    public:
         const char* str;
         void SerialInit();
         void recvRadarBytes();
-        int Sleep_inf(byte inf[]);
-        void ShowData(byte inf[]);
+        void ShowData();
         void OutputAssignment(int data);
 };
 
