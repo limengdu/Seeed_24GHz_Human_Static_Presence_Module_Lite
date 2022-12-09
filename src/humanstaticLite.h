@@ -4,10 +4,17 @@
 #define MESSAGE_HEAD1 0x53       //Data frame header1
 #define MESSAGE_HEAD2 0x59       //Data frame header2
 
-#define MESSAGE_END1 0x54
-#define MESSAGE_END2 0x43
+#define MESSAGE_END1  0x54
+#define MESSAGE_END2  0x43
 
+#define HUMANSTATUS   0x80
+#define HUMANEXIST    0x01
+#define HUMANMOVE     0x02
+#define HUMANSIGN     0x03
+#define HUMANDIRECT   0x0B
 
+#define SOMEBODY      0x01      //Somebody move
+#define NOBODY        0x00      //No one here
 
 
 
@@ -66,12 +73,16 @@
 
 class HumanStaticLite{
     private:
+        Stream *stream;   // e.g. SoftwareSerial or Serial1
+        int radarStatus;
         byte dataLen;
         boolean newData = false;
         char Msg[20];
     public:
+        HumanStaticLite(Stream *s);
         const char* str;
-        void SerialInit();
+        // void SerialInit();
+        void begin(Stream &port);
         void recvRadarBytes();
         void ShowData();
         void OutputAssignment(int data);

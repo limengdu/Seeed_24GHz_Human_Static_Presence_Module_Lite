@@ -1,22 +1,17 @@
 #include "Arduino.h"
 #include "humanstaticLite.h"
 
-#ifdef __AVR__
-  #include <SoftwareSerial.h>
-  SoftwareSerial SSerial(2, 3); // RX, TX
-  #define Serial1 SSerial
-#endif
-
-void HumanStaticLite::SerialInit(){
-  Serial1.begin(115200);
+HumanStaticLite::HumanStaticLite(Stream *s)
+    : stream(s){
+  radarStatus = 0;
 }
-
+   
 // Receive data and process
 void HumanStaticLite::recvRadarBytes(){
-  while (Serial1.available()) {
-    if(Serial1.read() == MESSAGE_HEAD1){           //收到头帧1
-      if(Serial1.read() == MESSAGE_HEAD2){         //收到头帧2
-        dataLen = Serial1.readBytesUntil(MESSAGE_END2, Msg, 20);
+  while (stream->available()) {
+    if(stream->read() == MESSAGE_HEAD1){           //收到头帧1
+      if(stream->read() == MESSAGE_HEAD2){         //收到头帧2
+        dataLen = stream->readBytesUntil(MESSAGE_END2, Msg, 20);
         if (dataLen > 0 && dataLen < 20){
           Msg[dataLen] = MESSAGE_END2;
           newData = true;
@@ -33,8 +28,10 @@ void HumanStaticLite::ShowData(){
     Serial.print(' ');
     Serial.print(MESSAGE_HEAD2, HEX);
     Serial.print(' ');
+    char charVal[4];
     for (byte n = 0; n < dataLen+1; n++) {
-      Serial.print(Msg[n], HEX);
+      sprintf(charVal, "%02X", Msg[n]);
+      Serial.print(F(charVal));
       Serial.print(' ');
     }
     Serial.println();
@@ -43,6 +40,36 @@ void HumanStaticLite::ShowData(){
     delay(200);
   }
 }
+
+// void HumanStatic_func(){
+//   switch (Msg[0])
+//   {
+//     case HUMANSTATUS:
+//       switch (Msg[1])
+//       {
+//         case HUMANEXIST:
+//           switch (Msg[3])
+//           {
+//             case SOMEBODY:
+//               Serial1.println("someone here");
+//               Serial1.println("------------------------------");
+//               break;
+//             case NOBODY:
+//               Serial1.println("nobody here");
+//               Serial1.println("------------------------------");
+//               break;
+//           }
+//           break;
+//         case HUMANMOVE:
+//           break;
+//         case HUMANSIGN:
+//           break;
+//         case HUMANDIRECT:
+//           break;
+//       }
+//       break;
+//   }
+// }
 
 //Respiratory sleep data frame decoding
 // int HumanStaticLite::Sleep_inf(byte inf[]){
