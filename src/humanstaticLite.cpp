@@ -5,12 +5,12 @@ HumanStaticLite::HumanStaticLite(Stream *s)
     : stream(s){
   radarStatus = 0;
 }
-   
+
 // Receive data and process
 void HumanStaticLite::recvRadarBytes(){
   while (stream->available()) {
-    if(stream->read() == MESSAGE_HEAD1){           //收到头帧1
-      if(stream->read() == MESSAGE_HEAD2){         //收到头帧2
+    if(stream->read() == MESSAGE_HEAD1){           //Receive header frame 1
+      if(stream->read() == MESSAGE_HEAD2){         //Receive header frame 2
         dataLen = stream->readBytesUntil(MESSAGE_END2, Msg, 20);
         if (dataLen > 0 && dataLen < 20){
           Msg[dataLen] = MESSAGE_END2;
@@ -22,7 +22,7 @@ void HumanStaticLite::recvRadarBytes(){
 }
 
 //Radar transmits data frames for display via serial port
-void HumanStaticLite::ShowData(){
+void HumanStaticLite::showData(){
   if(newData == true){
     Serial.print(MESSAGE_HEAD1, HEX);
     Serial.print(' ');
@@ -37,174 +37,141 @@ void HumanStaticLite::ShowData(){
     Serial.println();
     newData = false;
     Msg[dataLen] = {0};
-    delay(200);
+    // delay(200);
   }
 }
 
-// void HumanStatic_func(){
-//   switch (Msg[0])
-//   {
-//     case HUMANSTATUS:
-//       switch (Msg[1])
-//       {
-//         case HUMANEXIST:
-//           switch (Msg[3])
-//           {
-//             case SOMEBODY:
-//               Serial1.println("someone here");
-//               Serial1.println("------------------------------");
-//               break;
-//             case NOBODY:
-//               Serial1.println("nobody here");
-//               Serial1.println("------------------------------");
-//               break;
-//           }
-//           break;
-//         case HUMANMOVE:
-//           break;
-//         case HUMANSIGN:
-//           break;
-//         case HUMANDIRECT:
-//           break;
-//       }
-//       break;
-//   }
-// }
-
-//Respiratory sleep data frame decoding
-// int HumanStaticLite::Sleep_inf(byte inf[]){
-//   switch(inf[3]){
-//     case SLEEP_INF:
-//       switch(inf[4]){
-//         case BREATH:
-//           switch(inf[5]){
-//             case CHECK_SIGN:
-//               switch(inf[6]){
-//                 case BREATH_HOLD:
-//                   ShowData(inf);
-//                   Serial.println("Abnormal breath-holding detected.");
-//                   Serial.println("----------------------------");
-//                   return 1;
-//                   break;
-//                 case BREATH_NULL:
-//                   ShowData(inf);
-//                   Serial.println("No detection signal at the moment.");
-//                   Serial.println("----------------------------");
-//                   return 2;
-//                   break;
-//                 case BREATH_NORMAL:
-//                   ShowData(inf);
-//                   Serial.println("Normal breathing was detected.");
-//                   Serial.println("----------------------------");
-//                   return 3;
-//                   break;
-//                 case BREATH_MOVE:
-//                   ShowData(inf);
-//                   Serial.println("Abnormal motion is detected.");
-//                   Serial.println("----------------------------");
-//                   return 4;
-//                   break;
-//                 case BREATH_RAPID:
-//                   ShowData(inf);
-//                   Serial.println("Abnormal shortness of breath was detected.");
-//                   Serial.println("----------------------------");
-//                   return 5;
-//                   break;
-//               }
-//               break;
-//           }
-//           break;
-//         case SCENARIO:
-//           switch(inf[5]){
-//             case CLOSE_AWAY_BED:
-//               switch(inf[6]){
-//                 case AWAY_BED:
-//                   ShowData(inf);
-//                   Serial.println("Detects someone leaving the bed.");
-//                   Serial.println("----------------------------");
-//                   return 6;
-//                   break;
-//                 case CLOSE_BED:
-//                   ShowData(inf);
-//                   Serial.println("Detects someone in bed.");
-//                   Serial.println("----------------------------");
-//                   return 7;
-//                   break;
-//               }
-//               break;
-//             case SLEEP_STATE:
-//               switch(inf[6]){
-//                 case AWAKE:
-//                   ShowData(inf);
-//                   Serial.println("Current user status detected: Awake.");
-//                   Serial.println("----------------------------");
-//                   return 8;
-//                   break;
-//                 case LIGHT_SLEEP:
-//                   ShowData(inf);
-//                   Serial.println("Current user status detected: Light sleep.");
-//                   Serial.println("----------------------------");
-//                   return 9;
-//                   break;
-//                 case DEEP_SLEEP:
-//                   ShowData(inf);
-//                   Serial.println("Current user status detected: Deep sleep.");
-//                   Serial.println("----------------------------");
-//                   return 10;
-//                   break;
-//                 case SLEEP_NULL:
-//                   ShowData(inf);
-//                   Serial.println("Current user status detected: NULL.");
-//                   Serial.println("----------------------------");
-//                   return 11;
-//                   break;
-//               }
-//               break;
-//           }
-//           break;
-//       }
-//       break;
-//   }
-//   return 0;
-// }
-
-
-
-void HumanStaticLite::OutputAssignment(int data){
-  switch(data){
-    case 1:
-      str = "Breath-holding";
-      break;
-    case 2:
-      str = "No detection";
-      break;
-    case 3:
-      str = "Normal breathing";
-      break;
-    case 4:
-      str = "Abnormal motion";
-      break;
-    case 5:
-      str = "Shortness of breath";
-      break;
-    case 6:
-      str = "leaving the bed";
-      break;
-    case 7:
-      str = "in bed";
-      break;
-    case 8:
-      str = "Awake";
-      break;
-    case 9:
-      str = "Light sleep";
-      break;
-    case 10:
-      str = "Deep sleep";
-      break;
-    case 11:
-      str = "NULL";
-      break;
+void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
+  if(newData == true){
+    switch (Msg[0])
+    {
+      case HUMANSTATUS:
+        switch (Msg[1])
+        {
+          case HUMANEXIST:
+            switch (Msg[4])
+            {
+              case SOMEBODY:
+                showData();
+                Serial.println(F("Someone here"));
+                Serial.println(F("---------------------------------"));
+                break;
+              case NOBODY:
+                showData();
+                Serial.println(F("Nobody here."));
+                Serial.println(F("---------------------------------"));
+                break;
+            }
+            break;
+          case HUMANMOVE:
+            switch (Msg[4])
+            {
+              case NONE:
+                showData();
+                Serial.println(F("No human activity messages."));
+                Serial.println(F("---------------------------------"));
+                break;
+              case SOMEBODY_STOP:
+                showData();
+                Serial.println(F("Someone stop"));
+                Serial.println(F("---------------------------------"));
+                break;
+              case SOMEBODY_MOVE:
+                showData();
+                Serial.println(F("Someone moving"));
+                Serial.println(F("---------------------------------"));
+                break;
+            }
+            break;
+          case HUMANSIGN:
+            if(bodysign == true){
+              showData();
+              Serial.print(F("The motor signs parameters are: "));
+              Serial.println(Msg[4], DEC);
+              Serial.println(F("---------------------------------"));
+            }
+            break;
+          case HUMANDIRECT:
+            switch (Msg[4])
+            {
+              case NONE:
+                showData();
+                Serial.println(F("No human activity messages."));
+                Serial.println(F("---------------------------------"));
+                break;
+              case CA_CLOSE:
+                showData();
+                Serial.println(F("Someone is closing"));
+                Serial.println(F("---------------------------------"));
+                break;
+              case CA_AWAY:
+                showData();
+                Serial.println(F("Someone is staying away"));
+                Serial.println(F("---------------------------------"));
+                break;
+            }
+            break;
+        }
+        break;
+      case DETAILSTATUS:
+        switch(Msg[1]){
+          case DETAILINFO:
+            showData();
+            Serial.print(F("Spatial static values: "));
+            Serial.println(Msg[4], DEC);
+            Serial.print(F("Distance to stationary object: "));
+            Serial.println(Msg[5], DEC);
+            Serial.print(F("Spatial dynamic values: "));
+            Serial.println(Msg[6], DEC);
+            Serial.print(F("Distance from the movement object: "));
+            Serial.println(Msg[7], DEC);
+            Serial.print(F("Speed of moving object: "));
+            Serial.println(Msg[8], DEC);
+            Serial.println(F("---------------------------------"));
+            break;
+          case DETAILDIRECT:
+            switch(Msg[4]){
+              case NONE:
+                showData();
+                Serial.println(F("No human activity messages."));
+                Serial.println(F("---------------------------------"));
+                break;
+              case CA_CLOSE:
+                showData();
+                Serial.println(F("Someone is closing"));
+                Serial.println(F("---------------------------------"));
+                break;
+              case CA_AWAY:
+                showData();
+                Serial.println(F("Someone is staying away"));
+                Serial.println(F("---------------------------------"));
+                break;
+            }
+            break;
+          case DETAILSIGN:
+            if(bodysign == true){
+              showData();
+              Serial.print(F("The motor signs parameters are: "));
+              Serial.println(Msg[4], DEC);
+              Serial.println(F("---------------------------------"));
+            }
+            break;
+        }
+        break;
+    }
   }
-
 }
+
+void HumanStaticLite::setMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
+  if(cyclic || count < checkdata_len){
+    stream->write(buff, len);
+    stream->flush();
+    Serial.println(F("Setup message sent! Please check..."));
+    recvRadarBytes();
+    showData();
+    count++;
+  }
+}
+
+
+
