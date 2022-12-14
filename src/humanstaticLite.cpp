@@ -164,13 +164,21 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
 
 void HumanStaticLite::setMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
   if(cyclic || count < checkdata_len){
-    stream->write(buff, len);
-    stream->flush();
-    Serial.println(F("Setup message sent! Please check..."));
-    recvRadarBytes();
-    showData();
-    count++;
+    if(cyclic || count < 1){
+      stream->write(buff, len);
+      stream->flush();
+    }
+    do{
+      recvRadarBytes();
+      delay(10);
+    }while(!newData);
+    if(count == 1){
+      Serial.println(F("Setup message sent! Please check the Received frame..."));
+      showData();
+    }
+    newData = false;
   }
+  count++;
 }
 
 

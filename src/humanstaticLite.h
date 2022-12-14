@@ -39,7 +39,7 @@ class HumanStaticLite{
         boolean newData = false;
         char Msg[20];
         int count = 0;
-        int checkdata_len = 3;
+        int checkdata_len = 2;
     public:
         HumanStaticLite(Stream *s);
         const char* str;
