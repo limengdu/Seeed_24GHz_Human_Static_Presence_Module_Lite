@@ -42,6 +42,7 @@ void HumanStaticLite::showData(){
 }
 
 void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
+  recvRadarBytes();
   if(newData == true){
     switch (Msg[0])
     {
@@ -160,9 +161,10 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
         break;
     }
   }
+  newData = false;
 }
 
-void HumanStaticLite::setMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
+void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
   if(cyclic || count < checkdata_len){
     if(cyclic || count < 1){
       stream->write(buff, len);
@@ -170,16 +172,34 @@ void HumanStaticLite::setMode_func(const unsigned char* buff, int len, bool cycl
     }
     do{
       recvRadarBytes();
-      delay(10);
+      delay(20);
     }while(!newData);
-    if(count == 1){
-      Serial.println(F("Setup message sent! Please check the Received frame..."));
+    if(cyclic || count < 1){
+      Serial.print(F("  Sent  ---> "));
+      data_printf(buff, len);
+    }
+    if(count%2 == 1){
+      Serial.print(F("Receive <--- "));
       showData();
     }
     newData = false;
   }
   count++;
 }
+
+
+void HumanStaticLite::data_printf(const unsigned char* buff, int len){
+  char charVal[4];
+  for(int i=0; i<len; i++){
+    sprintf(charVal, "%02X", buff[i]);
+    Serial.print(F(charVal));
+    Serial.print(' ');
+  }
+  Serial.println();
+}
+
+
+
 
 
 

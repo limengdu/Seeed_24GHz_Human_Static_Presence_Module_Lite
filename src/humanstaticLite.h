@@ -37,16 +37,17 @@ class HumanStaticLite{
         int radarStatus;
         byte dataLen;
         boolean newData = false;
-        char Msg[20];
+        unsigned char Msg[20] = {0};
         int count = 0;
         int checkdata_len = 2;
+        void data_printf(const unsigned char* buff, int len);
     public:
         HumanStaticLite(Stream *s);
         const char* str;
         void recvRadarBytes();
         void showData();
         void HumanStatic_func(bool bodysign = false);
-        void setMode_func(const unsigned char* buff, int len, bool cyclic = false);
+        void checkSetMode_func(const unsigned char* buff, int len, bool cyclic = false);
 };
 
 #endif
