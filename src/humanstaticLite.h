@@ -29,25 +29,37 @@
 #define DETAILDIRECT  0x06
 #define DETAILSIGN    0x07
 
+#define SOMEONE       0x01
+#define NOONE         0x02
+#define NOTHING       0x03
+#define SOMEONE_STOP  0x04
+#define SOMEONE_MOVE  0x05
+#define HUMANSIGN     0x06
+#define SOMEONE_CLOSE 0x07
+#define SOMEONE_AWAY  0x08
+#define DETAILMESSAGE 0x09
 
+#define reset_frame_len 10
+
+const unsigned char reset_frame[10] = {0x53, 0x59, 0x01, 0x02, 0x00, 0x01, 0x0F, 0xBF, 0x54, 0x43};
 
 class HumanStaticLite{
     private:
         Stream *stream;   // e.g. SoftwareSerial or Serial1
-        int radarStatus;
+        boolean newData;
         byte dataLen;
-        boolean newData = false;
         unsigned char Msg[20] = {0};
         int count = 0;
         int checkdata_len = 2;
         void data_printf(const unsigned char* buff, int len);
     public:
+        int radarStatus = 0, bodysign_val = 0, static_val = 0, dynamic_val = 0, dis_static = 0, dis_move = 0, speed = 0;
         HumanStaticLite(Stream *s);
-        const char* str;
         void recvRadarBytes();
         void showData();
         void HumanStatic_func(bool bodysign = false);
         void checkSetMode_func(const unsigned char* buff, int len, bool cyclic = false);
+        void reset_func();
 };
 
 #endif

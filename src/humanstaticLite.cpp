@@ -3,7 +3,7 @@
 
 HumanStaticLite::HumanStaticLite(Stream *s)
     : stream(s){
-  radarStatus = 0;
+  this->newData = false;
 }
 
 // Receive data and process
@@ -14,7 +14,7 @@ void HumanStaticLite::recvRadarBytes(){
         dataLen = stream->readBytesUntil(MESSAGE_END2, Msg, 20);
         if (dataLen > 0 && dataLen < 20){
           Msg[dataLen] = MESSAGE_END2;
-          newData = true;
+          this->newData = true;
         }
       }
     }
@@ -23,7 +23,7 @@ void HumanStaticLite::recvRadarBytes(){
 
 //Radar transmits data frames for display via serial port
 void HumanStaticLite::showData(){
-  if(newData == true){
+  if(this->newData){
     Serial.print(MESSAGE_HEAD1, HEX);
     Serial.print(' ');
     Serial.print(MESSAGE_HEAD2, HEX);
@@ -35,7 +35,7 @@ void HumanStaticLite::showData(){
       Serial.print(' ');
     }
     Serial.println();
-    newData = false;
+    this->newData = false;
     Msg[dataLen] = {0};
     // delay(200);
   }
@@ -43,7 +43,14 @@ void HumanStaticLite::showData(){
 
 void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
   recvRadarBytes();
-  if(newData == true){
+  radarStatus = 0x00;
+  bodysign_val = 0x00;
+  static_val = 0x00;
+  dynamic_val = 0x00;
+  dis_static = 0x00;
+  dis_move = 0x00;
+  speed = 0x00;
+  if(this->newData){
     switch (Msg[0])
     {
       case HUMANSTATUS:
@@ -54,13 +61,11 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             {
               case SOMEBODY:
                 showData();
-                Serial.println(F("Someone here"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE;
                 break;
               case NOBODY:
                 showData();
-                Serial.println(F("Nobody here."));
-                Serial.println(F("---------------------------------"));
+                radarStatus = NOONE;
                 break;
             }
             break;
@@ -69,27 +74,23 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             {
               case NONE:
                 showData();
-                Serial.println(F("No human activity messages."));
-                Serial.println(F("---------------------------------"));
+                radarStatus = NOTHING;
                 break;
               case SOMEBODY_STOP:
                 showData();
-                Serial.println(F("Someone stop"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE_STOP;
                 break;
               case SOMEBODY_MOVE:
                 showData();
-                Serial.println(F("Someone moving"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE_MOVE;
                 break;
             }
             break;
           case HUMANSIGN:
-            if(bodysign == true){
+            if(bodysign){
               showData();
-              Serial.print(F("The motor signs parameters are: "));
-              Serial.println(Msg[4], DEC);
-              Serial.println(F("---------------------------------"));
+              radarStatus = HUMANSIGN;
+              bodysign_val = Msg[4];
             }
             break;
           case HUMANDIRECT:
@@ -97,18 +98,15 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             {
               case NONE:
                 showData();
-                Serial.println(F("No human activity messages."));
-                Serial.println(F("---------------------------------"));
+                radarStatus = NOTHING;
                 break;
               case CA_CLOSE:
                 showData();
-                Serial.println(F("Someone is closing"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE_CLOSE;
                 break;
               case CA_AWAY:
                 showData();
-                Serial.println(F("Someone is staying away"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE_AWAY;
                 break;
             }
             break;
@@ -118,50 +116,41 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
         switch(Msg[1]){
           case DETAILINFO:
             showData();
-            Serial.print(F("Spatial static values: "));
-            Serial.println(Msg[4], DEC);
-            Serial.print(F("Distance to stationary object: "));
-            Serial.println(Msg[5], DEC);
-            Serial.print(F("Spatial dynamic values: "));
-            Serial.println(Msg[6], DEC);
-            Serial.print(F("Distance from the movement object: "));
-            Serial.println(Msg[7], DEC);
-            Serial.print(F("Speed of moving object: "));
-            Serial.println(Msg[8], DEC);
-            Serial.println(F("---------------------------------"));
+            radarStatus = DETAILMESSAGE;
+            static_val = Msg[4];
+            dynamic_val = Msg[5];
+            dis_static = Msg[6];
+            dis_move = Msg[7];
+            speed = Msg[8];
             break;
           case DETAILDIRECT:
             switch(Msg[4]){
               case NONE:
                 showData();
-                Serial.println(F("No human activity messages."));
-                Serial.println(F("---------------------------------"));
+                radarStatus = NOTHING;
                 break;
               case CA_CLOSE:
                 showData();
-                Serial.println(F("Someone is closing"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE_CLOSE;
                 break;
               case CA_AWAY:
                 showData();
-                Serial.println(F("Someone is staying away"));
-                Serial.println(F("---------------------------------"));
+                radarStatus = SOMEONE_AWAY;
                 break;
             }
             break;
           case DETAILSIGN:
-            if(bodysign == true){
+            if(bodysign){
               showData();
-              Serial.print(F("The motor signs parameters are: "));
-              Serial.println(Msg[4], DEC);
-              Serial.println(F("---------------------------------"));
+              radarStatus = HUMANSIGN;
+              bodysign_val = Msg[4];
             }
             break;
         }
         break;
     }
   }
-  newData = false;
+  this->newData = false;
 }
 
 void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
@@ -173,7 +162,7 @@ void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool
     do{
       recvRadarBytes();
       delay(20);
-    }while(!newData);
+    }while(!(this->newData));
     if(cyclic || count < 1){
       Serial.print(F("  Sent  ---> "));
       data_printf(buff, len);
@@ -182,9 +171,15 @@ void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool
       Serial.print(F("Receive <--- "));
       showData();
     }
-    newData = false;
+    this->newData = false;
   }
   count++;
+}
+
+void HumanStaticLite::reset_func(){
+  stream->write(reset_frame, reset_frame_len);
+  stream->flush();
+  Serial.println(F("Radar reset!"));
 }
 
 
