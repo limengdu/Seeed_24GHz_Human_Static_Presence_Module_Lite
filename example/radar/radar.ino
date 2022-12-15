@@ -98,7 +98,7 @@ void loop()
 //    }
 //   }
 
-  radar.checkSetMode_func(buff_1, 10, false);
+  radar.checkSetMode_func(buff_2, 10, false);
 
 //  radar.recvRadarBytes();
 //  radar.showData();

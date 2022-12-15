@@ -31,7 +31,7 @@ void HumanStaticLite::showData(){
     char charVal[4];
     for (byte n = 0; n < dataLen+1; n++) {
       sprintf(charVal, "%02X", Msg[n]);
-      Serial.print(F(charVal));
+      Serial.print(charVal);
       Serial.print(' ');
     }
     Serial.println();
@@ -166,11 +166,11 @@ void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool
       delay(20);
     }while(!(this->newData));
     if(cyclic || count < 1){
-      Serial.print(F("  Sent  ---> "));
+      Serial.print("  Sent  ---> ");
       data_printf(buff, len);
     }
     if(count%2 == 1){
-      Serial.print(F("Receive <--- "));
+      Serial.print("Receive <--- ");
       showData();
     }
     this->newData = false;
@@ -182,7 +182,7 @@ void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool
 void HumanStaticLite::reset_func(){
   stream->write(reset_frame, reset_frame_len);
   stream->flush();
-  Serial.println(F("Radar reset!"));
+  Serial.println("Radar reset!");
 }
 
 //print redirect
@@ -190,7 +190,7 @@ void HumanStaticLite::data_printf(const unsigned char* buff, int len){
   char charVal[4];
   for(int i=0; i<len; i++){
     sprintf(charVal, "%02X", buff[i]);
-    Serial.print(F(charVal));
+    Serial.print(charVal);
     Serial.print(' ');
   }
   Serial.println();

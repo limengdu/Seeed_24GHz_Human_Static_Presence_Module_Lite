@@ -28,7 +28,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  radar.HumanStatic_func(true);    //Turn on printing of human movement sign parameters
+  radar.HumanStatic_func(false);    //Turn on printing of human movement sign parameters
   if(radar.radarStatus != 0x00){
     switch(radar.radarStatus){
       Serial.println(radar.radarStatus);
@@ -52,7 +52,7 @@ void loop() {
         Serial.println("Someone moving");
         Serial.println("---------------------------------");
         break;
-      case HUMANSIGN:
+      case HUMANPARA:
         Serial.print("The parameters of human body signs are: ");
         Serial.println(radar.bodysign_val, DEC);
         Serial.println("---------------------------------");
