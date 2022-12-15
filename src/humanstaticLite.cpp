@@ -90,7 +90,7 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
           case HUMANSIGN:
             if(bodysign){
               showData();
-              radarStatus = HUMANSIGN;
+              radarStatus = HUMANPARA;
               bodysign_val = Msg[4];
             }
             break;
@@ -143,7 +143,7 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
           case DETAILSIGN:
             if(bodysign){
               showData();
-              radarStatus = HUMANSIGN;
+              radarStatus = HUMANPARA;
               bodysign_val = Msg[4];
             }
             break;

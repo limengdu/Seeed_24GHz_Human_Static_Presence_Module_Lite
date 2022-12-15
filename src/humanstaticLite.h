@@ -35,7 +35,7 @@
 #define NOTHING       0x03       //No message
 #define SOMEONE_STOP  0x04       //Somebody stop
 #define SOMEONE_MOVE  0x05       //Somebody move
-#define HUMANSIGN     0x06       //Body Signs Parameters
+#define HUMANPARA     0x06       //Body Signs Parameters
 #define SOMEONE_CLOSE 0x07       //Someone approaches
 #define SOMEONE_AWAY  0x08       //Some people stay away
 #define DETAILMESSAGE 0x09       //Underlying parameters of the human state

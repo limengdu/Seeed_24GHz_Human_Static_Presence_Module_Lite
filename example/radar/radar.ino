@@ -7,7 +7,7 @@
 //#define TX_Pin A3
 
 //SoftwareSerial mySerial = SoftwareSerial(RX_Pin, TX_Pin);
-//
+
 //// we'll be using software serial
 //HumanStaticLite radar = HumanStaticLite(&mySerial);
 
@@ -98,7 +98,7 @@ void loop()
 //    }
 //   }
 
-  radar.checkSetMode_func(buff_3, 10, false);
+  radar.checkSetMode_func(buff_1, 10, false);
 
 //  radar.recvRadarBytes();
 //  radar.showData();
