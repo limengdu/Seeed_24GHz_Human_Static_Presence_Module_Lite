@@ -4,14 +4,14 @@
 #define MESSAGE_HEAD1 0x53       //Data frame header1
 #define MESSAGE_HEAD2 0x59       //Data frame header2
 
-#define MESSAGE_END1  0x54
-#define MESSAGE_END2  0x43
+#define MESSAGE_END1  0x54       //End1 of data frame
+#define MESSAGE_END2  0x43       //End2 of data frame
 
-#define HUMANSTATUS   0x80
-#define HUMANEXIST    0x01
-#define HUMANMOVE     0x02
-#define HUMANSIGN     0x03
-#define HUMANDIRECT   0x0B
+#define HUMANSTATUS   0x80       //Human Presence Information
+#define HUMANEXIST    0x01       //Presence of the human body
+#define HUMANMOVE     0x02       //Human movement information
+#define HUMANSIGN     0x03       //Body Signs Parameters
+#define HUMANDIRECT   0x0B       //Human movement trends
 
 #define SOMEBODY      0x01       //Somebody move
 #define NOBODY        0x00       //No one here
@@ -24,33 +24,35 @@
 #define CA_AWAY       0x02       //Some people stay away
 
 
-#define DETAILSTATUS  0x08       //
-#define DETAILINFO    0x01
-#define DETAILDIRECT  0x06
-#define DETAILSIGN    0x07
+#define DETAILSTATUS  0x08       //Underlying parameters of the human state
+#define DETAILINFO    0x01       //Detailed data on the state of human movement
+#define DETAILDIRECT  0x06       //Human movement trends
+#define DETAILSIGN    0x07       //Body Signs Parameters
 
-#define SOMEONE       0x01
-#define NOONE         0x02
-#define NOTHING       0x03
-#define SOMEONE_STOP  0x04
-#define SOMEONE_MOVE  0x05
-#define HUMANSIGN     0x06
-#define SOMEONE_CLOSE 0x07
-#define SOMEONE_AWAY  0x08
-#define DETAILMESSAGE 0x09
+//Return status, Use in arduino
+#define SOMEONE       0x01       //There are people
+#define NOONE         0x02       //No one
+#define NOTHING       0x03       //No message
+#define SOMEONE_STOP  0x04       //Somebody stop
+#define SOMEONE_MOVE  0x05       //Somebody move
+#define HUMANSIGN     0x06       //Body Signs Parameters
+#define SOMEONE_CLOSE 0x07       //Someone approaches
+#define SOMEONE_AWAY  0x08       //Some people stay away
+#define DETAILMESSAGE 0x09       //Underlying parameters of the human state
 
-#define reset_frame_len 10
+#define reset_frame_len 10       //Reset data frame length
 
+//Reset data frame
 const unsigned char reset_frame[10] = {0x53, 0x59, 0x01, 0x02, 0x00, 0x01, 0x0F, 0xBF, 0x54, 0x43};
 
 class HumanStaticLite{
     private:
-        Stream *stream;   // e.g. SoftwareSerial or Serial1
+        Stream *stream;               // e.g. SoftwareSerial or Serial1
         boolean newData;
         byte dataLen;
-        unsigned char Msg[20] = {0};
+        unsigned char Msg[20] = {0};  //Storage of the data frames returned by the radar up to a maximum length of 20.
         int count = 0;
-        int checkdata_len = 2;
+        int checkdata_len = 2;        //Without cyclic sending, number of frames sent
         void data_printf(const unsigned char* buff, int len);
     public:
         int radarStatus = 0, bodysign_val = 0, static_val = 0, dynamic_val = 0, dis_static = 0, dis_move = 0, speed = 0;

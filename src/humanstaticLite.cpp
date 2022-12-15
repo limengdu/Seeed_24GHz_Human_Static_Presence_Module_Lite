@@ -41,6 +41,7 @@ void HumanStaticLite::showData(){
   }
 }
 
+//Parsing data frames
 void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
   recvRadarBytes();
   radarStatus = 0x00;
@@ -153,6 +154,7 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
   this->newData = false;
 }
 
+//Send data frame
 void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
   if(cyclic || count < checkdata_len){
     if(cyclic || count < 1){
@@ -176,13 +178,14 @@ void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool
   count++;
 }
 
+//Reset radar
 void HumanStaticLite::reset_func(){
   stream->write(reset_frame, reset_frame_len);
   stream->flush();
   Serial.println(F("Radar reset!"));
 }
 
-
+//print redirect
 void HumanStaticLite::data_printf(const unsigned char* buff, int len){
   char charVal[4];
   for(int i=0; i<len; i++){
