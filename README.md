@@ -658,7 +658,7 @@ At the same time, you can also send data frames to the Sensor via the software's
 
 - [PDF] [Datasheet]()
 - [PDF] [User Manual]()
-- [EXE] [upper computer software]()
+- [EXE] [upper computer software](https://files.seeedstudio.com/wiki/Radar_MR24HPCB1/Human-Radar-Open-Protocol_2.0.exe)
 
 ## Tech Support
 
