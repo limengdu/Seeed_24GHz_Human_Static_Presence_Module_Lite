@@ -67,15 +67,18 @@ void loop() {
         break;
       case DETAILMESSAGE:
         Serial.print("Spatial static values: ");
-        Serial.println(radar.static_val, DEC);
+        Serial.println(radar.static_val);
         Serial.print("Distance to stationary object: ");
-        Serial.println(radar.dynamic_val, DEC);
+        Serial.println(radar.dynamic_val);
         Serial.print("Spatial dynamic values: ");
-        Serial.println(radar.dis_static, DEC);
+        Serial.print(radar.dis_static);
+        Serial.println(" m");
         Serial.print("Distance from the movement object: ");
-        Serial.println(radar.dis_move, DEC);
+        Serial.print(radar.dis_move);
+        Serial.println(" m");
         Serial.print("Speed of moving object: ");
-        Serial.println(radar.speed, DEC);
+        Serial.print(radar.speed);
+        Serial.println(" m/s");
         Serial.println("---------------------------------");
         break;
     }
