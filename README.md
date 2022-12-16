@@ -1,6 +1,6 @@
 # Seeed 24GHz Human Static Presence Module Lite
 
-## Radar development with Arduino
+## Sensor development with Arduino
 
 ### Arduino Library Overview
 
@@ -15,34 +15,34 @@ The library code used in this example can be downloaded by clicking the icon bel
 
 Before we get started developing a sketch, let's look at the available functions of the library.
 
-- `void recvRadarBytes()` —— This function collects the data frames reported by the radar via the UART according to the frame headers and frame tails in the radar data protocol. Used in conjunction with the `showData()` function, the collected data information can be printed out via the serial port.
+- `void recvRadarBytes()` —— This function collects the data frames reported by the Sensor via the UART according to the frame headers and frame tails in the Sensor data protocol. Used in conjunction with the `showData()` function, the collected data information can be printed out via the serial port.
 **Input parameters:** None
 **Return value:** None
 
-- `void showData();` —— This function serves to print out the complete data frame reported by the radar at once via the serial port and needs to be used in conjunction with the `recvRadarBytes()` function.
+- `void showData();` —— This function serves to print out the complete data frame reported by the Sensor at once via the serial port and needs to be used in conjunction with the `recvRadarBytes()` function.
 **Input parameters:** None
 **Return value:** None
 
-- `void HumanStatic_func(bool bodysign /*=false*/)` —— This function is responsible for parsing the data frames of the radar and outputting the relevant data on the state of the human presence.
+- `void HumanStatic_func(bool bodysign /*=false*/)` —— This function is responsible for parsing the data frames of the Sensor and outputting the relevant data on the state of the human presence.
 **Input parameters:** `bodysign` —— This parameter is a switch that controls whether or not to output Human Movement Parameters. If **true**, the output will contain a large amount of human sign parameter data, which may affect your experience of viewing the data. By default this parameter is **false** and no information on the body sign parameters is displayed.
 <span id="jump2">**Return value:**</span>
     - `int radarStatus` —— The value returned indicates which status class the parsed data frame belongs to. The specific categories can be found in the **Default Variables** section.
     - `int bodysign_val` —— The value returned represents the value of the Human Movement Parameter. This value is only valid with the parameter `bodysign=true`.
     - `int static_val` —— This value is equivalent to the **static value**. The variation in this value represents the constant statics noise in the environment. Exit Energy are low when the space is unoccupied, and overall Exit Energy fluctuate at higher values when there is a stationary person in the space (slight movement of the chest breathing). This value is only valid if the Open Underlying Message is on.
     - `int dynamic_val` —— The variation in this value represents the constant motion noise in the environment. The Motion Energy is low when there is no one in the space, and the overall Motion Energy gets higher as the motion increases in magnitude and distance. This value is only valid if the open underlying message is on.
-    - `int dis_static` —— The straight line distance between the environment and the radar in the presence of a slightly moving area. When there is someone stationary at a location in space, the straight line distance from the radar is output in real time. This value is only valid if the Open Underlying Message is on.
-    - `int dis_move` —— The straight-line distance between a moving position in the environment and the radar. When there is a person in motion at a location in space, the straight line distance from the radar is output in real time for that location. the straight-line distance from the radar. This value is only valid if the Open Underlying Message is on.
+    - `int dis_static` —— The straight line distance between the environment and the Sensor in the presence of a slightly moving area. When there is someone stationary at a location in space, the straight line distance from the Sensor is output in real time. This value is only valid if the Open Underlying Message is on.
+    - `int dis_move` —— The straight-line distance between a moving position in the environment and the Sensor. When there is a person in motion at a location in space, the straight line distance from the Sensor is output in real time for that location. the straight-line distance from the Sensor. This value is only valid if the Open Underlying Message is on.
     - `int speed` —— This value indicates the speed of movement of the moving object. The value is for reference only. This value is only valid if the Open Underlying Message is on.
 
-- `void checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*= false*/)` —— This function can be used to send data frames to the radar. The data frames sent and the data frames returned are printed out via the serial port.
+- `void checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*= false*/)` —— This function can be used to send data frames to the Sensor. The data frames sent and the data frames returned are printed out via the serial port.
 **Input parameters:** 
-    - `buff` —— The data frame you want to send to the radar.
-    - `len` —— The length of the data frame you want to send to the radar.
+    - `buff` —— The data frame you want to send to the Sensor.
+    - `len` —— The length of the data frame you want to send to the Sensor.
     - `cyclic` —— Cyclic send switch. The default is false, which can be set to **true** if you wish to send this data frame cyclically.
 
     **Return value:** None
 
-- `void reset_func()` —— The function serves to reset the radar.
+- `void reset_func()` —— The function serves to reset the Sensor.
 **Input parameters:** None
 **Return value:** None
 
@@ -185,11 +185,11 @@ Before completing the following examples, you will need to prepare the following
 
 <div align=center><img width = 600 src="https://files.seeedstudio.com/wiki/60GHzradar/3.png"/></div>
 
-In this example, we will demonstrate how the radar works with our popular product XIAO nRF52840 Sense.
+In this example, we will demonstrate how the Sensor works with our popular product XIAO nRF52840 Sense.
 
-### Demo1: Serial port printing of raw data frames from radar output
+### Demo1: Serial port printing of raw data frames from Sensor output
 
-This example will guide you through the process of printing out the raw data reported by the radar via the serial port.
+This example will guide you through the process of printing out the raw data reported by the Sensor via the serial port.
 
 The following example program is in the examples folder of the library called **MR24HPCB1_rawdata_print**.
 
@@ -230,13 +230,13 @@ void loop() {
 }
 ```
 
-In this program, we are using the XIAO nRF52840's hardware **Serial1** port to connect to the radar and use the hardware **Serial** port Serial to output data, so we need to initialise this serial port separately in the initialisation function `Setup()`.
+In this program, we are using the XIAO nRF52840's hardware **Serial1** port to connect to the Sensor and use the hardware **Serial** port Serial to output data, so we need to initialise this serial port separately in the initialisation function `Setup()`.
 
-In the main `loop()` function we use the function `recvRadarBytes()` to receive data frames from the radar and then use the `showData()` function to print out the received data frames via the serial port.
+In the main `loop()` function we use the function `recvRadarBytes()` to receive data frames from the Sensor and then use the `showData()` function to print out the received data frames via the serial port.
 
 In this program, it is important to note that there is an interval between the reception and output of every two data frames to avoid a jam on the main board. This time should be no less than **150ms**. 
 
-This means that there is no way for the main board to receive all the data frames reported by the radar, but as the number of frames reported by the radar is very large and frequent, this does not affect the accuracy of using the radar to determine the environment.
+This means that there is no way for the main board to receive all the data frames reported by the Sensor, but as the number of frames reported by the Sensor is very large and frequent, this does not affect the accuracy of using the Sensor to determine the environment.
 
 Upload program. Opening your serial monitor to a baud rate of 115200 should show the result. The output should look something like the below image.
 
@@ -244,7 +244,7 @@ Upload program. Opening your serial monitor to a baud rate of 115200 should show
 
 ### Demo2: Serial port printing of parsed human presence information
 
-In this example, we will use the functions in the library to parse the received data frames and print out all the feature data reported by the radar active via the serial port.
+In this example, we will use the functions in the library to parse the received data frames and print out all the feature data reported by the Sensor active via the serial port.
 
 The following example program is in the examples folder of the library called **MR24HPCB1_parsed_rawdata**.
 
@@ -343,14 +343,14 @@ If you choose to turn it on, i.e. pass in the parameter `true`, you may get the 
 
 !!!Note
     Human Movement Parameters: human movement amplitude values. The Human Movement Parameters is **0** when no one is in the space, **1-5** when someone is present and stationary, and **2-100** when the body is in motion (the greater the motion amplitude the closer the body motion parameter is).
-    This means that if you feel that the results of the radar recognition do not meet your expectations, you can output information about the presence of the human body by customising the judgement of the Human Movement Parameters.
+    This means that if you feel that the results of the Sensor recognition do not meet your expectations, you can output information about the presence of the human body by customising the judgement of the Human Movement Parameters.
 
 If you want to stop the crazy output of the Human Movement Parameters on the serial port, enter the parameter `false` and you will then be able to see clean body status information on the serial port.
 
 <div align=center><img width = 600 src="https://files.seeedstudio.com/wiki/Radar_MR24HPCB1/3.png"/></div>
 
 !!!Tip
-    You may not see content printed on the serial monitor for a longer period of time, this may be normal. The algorithm built into the radar is such that information is only output when the motion state of the monitored object changes. If you have been stationary after the upload procedure, you may wish to get up and move around and observe the effect.
+    You may not see content printed on the serial monitor for a longer period of time, this may be normal. The algorithm built into the Sensor is such that information is only output when the motion state of the monitored object changes. If you have been stationary after the upload procedure, you may wish to get up and move around and observe the effect.
 
 There is also the possibility that the data you received differs from the information in the data shown in the two images above. Then you may have switched on the Open Underlying Message output switch.
 
@@ -358,9 +358,9 @@ There is also the possibility that the data you received differs from the inform
 
 For more information on how to switch on and off Open Underlying Message, please refer to the relevant section of [**Demo3**](#jump1). In short, the opening of Open Underlying Message means that more detailed data is exported.
 
-For the meaning of the data of the Open Underlying Message, please consult the [**Function**](#jump2) section or user manual of this radar for space reasons.
+For the meaning of the data of the Open Underlying Message, please consult the [**Function**](#jump2) section or user manual of this Sensor for space reasons.
 
-### <span id="jump1">Demo3: Send data to radar</span>
+### <span id="jump1">Demo3: Send data to Sensor</span>
 
 The MR24HPC1 offers a wealth of mode setting functions. This example will explain the implementation of the switch Open Underlying Message as an example of how to send data frames.
 
@@ -405,7 +405,7 @@ void loop() {
 }
 ```
 
-Before sending data to the radar, we need to consult the user manual to obtain the complete data frames to be sent according to our needs and define an array in the program to hold the data frames to be sent.
+Before sending data to the Sensor, we need to consult the user manual to obtain the complete data frames to be sent according to our needs and define an array in the program to hold the data frames to be sent.
 
 In this example, we have created two arrays of data frames according to the user manual. Their function is to turn on or off the Open Underlying Message function.
 
@@ -423,7 +423,7 @@ const unsigned char open_buff[10] = {0x53, 0x59, 0x08, 0x00, 0x00, 0x01, 0x01, 0
 
     `0x53 + 0x59 + 0x02 + 0xA2 + 0x00 + 0x01 + 0x0F = 0x015F`
 
-    Then we need to take the lower two digits of it, which would be **5F**, so the checksum of this data frame is **5F**. If we want to look up the ID of the radar, then you can define the following array.
+    Then we need to take the lower two digits of it, which would be **5F**, so the checksum of this data frame is **5F**. If we want to look up the ID of the Sensor, then you can define the following array.
 
     `const unsigned char DevID_buff[10] = {0x53, 0x59, 0x02, 0xA1, 0x00, 0x01, 0x0F, 0x5F, 0x54, 0x43};`
 
@@ -441,13 +441,13 @@ Upload program. Opening your serial monitor to a baud rate of 115200 should show
 
 At this point please check the data frames returned and if they match the data frames returned as described in the user manual, then the setup was successful.
 
-Normally, our commands do not need to be repeated to the radar, but as the radar replies with messages so fast that we cannot be sure that we will receive the exact data message returned by the radar. There are two solutions to this problem.
+Normally, our commands do not need to be repeated to the Sensor, but as the Sensor replies with messages so fast that we cannot be sure that we will receive the exact data message returned by the Sensor. There are two solutions to this problem.
 - Re-upload the above procedure several times.
-- Set the third parameter of the `checkSetMode_func()` function (cyclic sending) to `true`. Please note, however, that repeatedly sending data frames of the setting type **may cause the radar to jam**, so please use this function with caution. If the radar is stuck, disconnect the 5V supply pin from the radar and wait a few moments for the function to resume.
+- Set the third parameter of the `checkSetMode_func()` function (cyclic sending) to `true`. Please note, however, that repeatedly sending data frames of the setting type **may cause the Sensor to jam**, so please use this function with caution. If the Sensor is stuck, disconnect the 5V supply pin from the Sensor and wait a few moments for the function to resume.
 
-### Demo4: Reset radar
+### Demo4: Reset Sensor
 
-There may be times when you have problems with your radar detecting anomalies or when you want to clear all settings on your radar, then you can reset your radar according to this example.
+There may be times when you have problems with your Sensor detecting anomalies or when you want to clear all settings on your Sensor, then you can reset your Sensor according to this example.
 
 The following example program is in the examples folder of the library called **MR24HPCB1_reset_radar**.
 
@@ -488,13 +488,13 @@ void loop() {
 }
 ```
 
-Resetting the radar is very simple, you just need to call `reset_func()`. The reset only needs to be **executed once**, so we use it in the `Setup()` function.
+Resetting the Sensor is very simple, you just need to call `reset_func()`. The reset only needs to be **executed once**, so we use it in the `Setup()` function.
 
 ### Demo5: Using Arduino/Seeeduino
 
-Our library is Arduino compatible and you can also choose the Arduino you have on hand to develop your radar project.
+Our library is Arduino compatible and you can also choose the Arduino you have on hand to develop your Sensor project.
 
-The MR24HPC1 radar communicates using the UART serial port, you just need to connect the radar to your Arduino as wired below.
+The MR24HPC1 Sensor communicates using the UART serial port, you just need to connect the Sensor to your Arduino as wired below.
 
 <table align="center">
 	<tr>
@@ -524,7 +524,7 @@ The MR24HPC1 radar communicates using the UART serial port, you just need to con
 	</tr>
 </table>
 
-All the functions are applied in the same way as in Demo1 to Demo4 above, so we will not repeat them in this example. In this example, we will give you an overview of how to use the Arduino's soft serial port to get data information from the radar.
+All the functions are applied in the same way as in Demo1 to Demo4 above, so we will not repeat them in this example. In this example, we will give you an overview of how to use the Arduino's soft serial port to get data information from the Sensor.
 
 !!!Tip
     For notes on the Arduino soft serial port, please refer to the [official Arduino documentation](https://docs.arduino.cc/learn/built-in-libraries/software-serial).
@@ -560,7 +560,7 @@ void setup() {
 }
 ```
 
-Using **Demo1** as an example, if you want to use the Arduino to print the reported data frames from the radar, then the complete program is as follows.
+Using **Demo1** as an example, if you want to use the Arduino to print the reported data frames from the Sensor, then the complete program is as follows.
 
 ```c++
 #include "Arduino.h"
@@ -597,9 +597,9 @@ void loop() {
 
 ### Demo6: Direct connection to PC for data
 
-You can refer to this routine if you want to use an upper computer designed for radar, or if you want to use the serial software to get a complete data frame.
+You can refer to this routine if you want to use an upper computer designed for Sensor, or if you want to use the serial software to get a complete data frame.
 
-Connect the radar directly to the computer's usb port via a [**UART to USB** device](https://www.seeedstudio.com/USB-To-Uart-5V-p-1833.html?queryID=588a892811a774ad3005ea0d31427532&objectID=1111&indexName=bazaar_retailer_products). The wiring is shown in the table below.
+Connect the Sensor directly to the computer's usb port via a [**UART to USB** device](https://www.seeedstudio.com/USB-To-Uart-5V-p-1833.html?queryID=588a892811a774ad3005ea0d31427532&objectID=1111&indexName=bazaar_retailer_products). The wiring is shown in the table below.
 
 <table align="center">
 	<tr>
@@ -632,26 +632,26 @@ Connect the radar directly to the computer's usb port via a [**UART to USB** dev
 	</tr>
 </table>
 
-Use a software like serial debugging assistant to select the serial port where the radar is located.
+Use a software like serial debugging assistant to select the serial port where the Sensor is located.
 
 <div align=center><img width = 200 src="https://files.seeedstudio.com/wiki/60GHzradar/37.png"/></div>
 
 !!!Attention
-    MR24HPC1 radar needs 5V power supply, otherwise the radar may not work properly.
+    MR24HPC1 Sensor needs 5V power supply, otherwise the Sensor may not work properly.
 
-After a successful connection, you will see the radar sending a steady stream of messages.
+After a successful connection, you will see the Sensor sending a steady stream of messages.
 
 <div align=center><img width = 600 src="https://files.seeedstudio.com/wiki/60GHzradar/39.png"/></div>
 
-At the same time, you can also send data frames to the radar via the software's send function.
+At the same time, you can also send data frames to the Sensor via the software's send function.
 
 <div align=center><img width = 600 src="https://files.seeedstudio.com/wiki/60GHzradar/40.png"/></div>
 
 ## Troubleshooting
 
-**FAQ1: Can this radar detect more than one person at a time in the same environment?**
+**FAQ1: Can this Sensor detect more than one person at a time in the same environment?**
 
-> A: Not available. This radar can only be used on a single living object. If more than one person or animal is in the monitoring range, this will have an effect on the results of the monitoring.
+> A: Not available. This Sensor can only be used on a single living object. If more than one person or animal is in the monitoring range, this will have an effect on the results of the monitoring.
 
 
 ## Resources
