@@ -42,6 +42,8 @@
 
 #define reset_frame_len 10       //Reset data frame length
 
+#define unit          0.5        //Calculate unit steps
+
 //Reset data frame
 const unsigned char reset_frame[10] = {0x53, 0x59, 0x01, 0x02, 0x00, 0x01, 0x0F, 0xBF, 0x54, 0x43};
 
@@ -54,8 +56,10 @@ class HumanStaticLite{
         int count = 0;
         int checkdata_len = 2;        //Without cyclic sending, number of frames sent
         void data_printf(const unsigned char* buff, int len);
+        float decodeVal_func(int val, bool decode = false);
     public:
-        int radarStatus = 0, bodysign_val = 0, static_val = 0, dynamic_val = 0, dis_static = 0, dis_move = 0, speed = 0;
+        int radarStatus = 0, bodysign_val = 0, static_val = 0, dynamic_val = 0;
+        float dis_static = 0.0, dis_move = 0.0, speed = 0.0;
         HumanStaticLite(Stream *s);
         void recvRadarBytes();
         void showData();

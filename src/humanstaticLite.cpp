@@ -37,7 +37,6 @@ void HumanStaticLite::showData(){
     Serial.println();
     this->newData = false;
     Msg[dataLen] = {0};
-    // delay(200);
   }
 }
 
@@ -120,9 +119,9 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             radarStatus = DETAILMESSAGE;
             static_val = Msg[4];
             dynamic_val = Msg[5];
-            dis_static = Msg[6];
-            dis_move = Msg[7];
-            speed = Msg[8];
+            dis_static = decodeVal_func(Msg[6]);
+            dis_move = decodeVal_func(Msg[7]);
+            speed = decodeVal_func(Msg[8],true);
             break;
           case DETAILDIRECT:
             switch(Msg[4]){
@@ -196,7 +195,16 @@ void HumanStaticLite::data_printf(const unsigned char* buff, int len){
   Serial.println();
 }
 
-
+float HumanStaticLite::decodeVal_func(int val, bool decode){
+  if(!decode) return val*unit;   //Calculate distance
+  else{                          //Calculate speed
+    if(val == 0x0A){
+      return 0;
+    }
+    else if(val > 0x0A) return -((val-10)*unit);   //Away speed is negative
+    else if(val < 0x0A) return (val)*unit;         //Approach speed is positive
+  }
+}
 
 
 
