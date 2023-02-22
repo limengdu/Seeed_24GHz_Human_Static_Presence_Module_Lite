@@ -23,7 +23,7 @@ void setup() {
 
   while(!Serial);   //When the serial port is opened, the program starts to execute.
 
-  Serial.println("Readly");
+  Serial.println("Ready");
 }
 
 void loop() {
@@ -68,14 +68,18 @@ void loop() {
       case DETAILMESSAGE:
         Serial.print("Spatial static values: ");
         Serial.println(radar.static_val);
+
         Serial.print("Distance to stationary object: ");
-        Serial.println(radar.dynamic_val);
-        Serial.print("Spatial dynamic values: ");
         Serial.print(radar.dis_static);
         Serial.println(" m");
+
+        Serial.print("Spatial dynamic values: ");
+        Serial.println(radar.dynamic_val);
+        
         Serial.print("Distance from the movement object: ");
         Serial.print(radar.dis_move);
         Serial.println(" m");
+
         Serial.print("Speed of moving object: ");
         Serial.print(radar.speed);
         Serial.println(" m/s");
