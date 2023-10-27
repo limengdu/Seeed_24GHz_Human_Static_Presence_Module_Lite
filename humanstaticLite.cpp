@@ -204,6 +204,7 @@ float HumanStaticLite::decodeVal_func(int val, bool decode){
     else if(val > 0x0A) return -((val-10)*unit);   //Away speed is negative
     else if(val < 0x0A) return (val)*unit;         //Approach speed is positive
   }
+  return 0;
 }
 
 
