@@ -13,6 +13,7 @@ void HumanStaticLite::recvRadarBytes(){
       if(stream->read() == MESSAGE_HEAD2){         //Receive header frame 2
         dataLen = stream->readBytesUntil(MESSAGE_END2, Msg, 20);
         if (dataLen > 0 && dataLen < 20){
+          Msg[dataLen - 1] = MESSAGE_END1;
           Msg[dataLen] = MESSAGE_END2;
           this->newData = true;
         }
