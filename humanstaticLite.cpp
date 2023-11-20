@@ -118,8 +118,8 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             showData();
             radarStatus = DETAILMESSAGE;
             static_val = Msg[4];
-            dynamic_val = Msg[5];
-            dis_static = decodeVal_func(Msg[6]);
+            dis_static = decodeVal_func(Msg[5]);
+            dynamic_val = Msg[6];
             dis_move = decodeVal_func(Msg[7]);
             speed = decodeVal_func(Msg[8],true);
             break;
