@@ -13,6 +13,7 @@ void HumanStaticLite::recvRadarBytes(){
       if(stream->read() == MESSAGE_HEAD2){         //Receive header frame 2
         dataLen = stream->readBytesUntil(MESSAGE_END2, Msg, 20);
         if (dataLen > 0 && dataLen < 20){
+          Msg[dataLen - 1] = MESSAGE_END1;
           Msg[dataLen] = MESSAGE_END2;
           this->newData = true;
         }
@@ -122,8 +123,8 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             showData();
             radarStatus = DETAILMESSAGE;
             static_val = Msg[4];
-            dynamic_val = Msg[5];
-            dis_static = decodeVal_func(Msg[6]);
+            dis_static = decodeVal_func(Msg[5]);
+            dynamic_val = Msg[6];
             dis_move = decodeVal_func(Msg[7]);
             speed = decodeVal_func(Msg[8],true);
             break;
@@ -210,4 +211,5 @@ float HumanStaticLite::decodeVal_func(int val, bool decode){
     else if(val > 0x0A) return -((val-10)*unit);   //Away speed is negative
     else if(val < 0x0A) return (val)*unit;         //Approach speed is positive
   }
+  return 0;
 }
