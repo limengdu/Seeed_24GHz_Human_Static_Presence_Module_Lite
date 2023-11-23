@@ -19,9 +19,10 @@ Before we get started developing a sketch, let's look at the available functions
 **Input parameters:** None
 **Return value:** None
 
-- `void showData();` —— This function serves to print out the complete data frame reported by the Sensor at once via the serial port and needs to be used in conjunction with the `recvRadarBytes()` function.
+- `unsigned char* showData();` —— This function serves to print out the complete data frame reported by the Sensor at once via the serial port and needs to be used in conjunction with the `recvRadarBytes()` function.
 **Input parameters:** None
-**Return value:** None
+**Return value:**
+    - `unsigned char*` —— The data frame returned to the development board by the radar. It's an array of size 22, including the data frame headers to match the printed data. When the maximum of 22 isn't reached, the trailing values are set to 0.
 
 - `void HumanStatic_func(bool bodysign /*=false*/)` —— This function is responsible for parsing the data frames of the Sensor and outputting the relevant data on the state of the human presence.
 **Input parameters:** `bodysign` —— This parameter is a switch that controls whether or not to output Human Movement Parameters. If **true**, the output will contain a large amount of human sign parameter data, which may affect your experience of viewing the data. By default this parameter is **false** and no information on the body sign parameters is displayed.
@@ -34,13 +35,14 @@ Before we get started developing a sketch, let's look at the available functions
     - `int dis_move` —— The straight-line distance between a moving position in the environment and the Sensor. When there is a person in motion at a location in space, the straight line distance from the Sensor is output in real time for that location. the straight-line distance from the Sensor. This value is only valid if the Open Underlying Message is on.
     - `int speed` —— This value indicates the speed of movement of the moving object. The value is for reference only. This value is only valid if the Open Underlying Message is on.
 
-- `void checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*= false*/)` —— This function can be used to send data frames to the Sensor. The data frames sent and the data frames returned are printed out via the serial port.
+- `unsigned char* checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*= false*/)` —— This function can be used to send data frames to the Sensor. The data frames sent and the data frames returned are printed out via the serial port.
 **Input parameters:** 
     - `buff` —— The data frame you want to send to the Sensor.
     - `len` —— The length of the data frame you want to send to the Sensor.
     - `cyclic` —— Cyclic send switch. The default is false, which can be set to **true** if you wish to send this data frame cyclically.
 
-    **Return value:** None
+  **Return value:**
+    - `unsigned char*` —— The data frame returned to the development board by the radar. It's an array of size 22, including the data frame headers. When the maximum of 22 isn't reached, the trailing values are set to 0. Its initial value is `NULL` and is modified once the data frame is returned.
 
 - `void reset_func()` —— The function serves to reset the Sensor.
 **Input parameters:** None

@@ -62,9 +62,9 @@ class HumanStaticLite{
         float dis_static = 0.0, dis_move = 0.0, speed = 0.0;
         HumanStaticLite(Stream *s);
         void recvRadarBytes();
-        void showData();
+        unsigned char* showData();
         void HumanStatic_func(bool bodysign = false);
-        void checkSetMode_func(const unsigned char* buff, int len, bool cyclic = false);
+        unsigned char* checkSetMode_func(const unsigned char* buff, int len, bool cyclic = false);
         void reset_func();
 };
 

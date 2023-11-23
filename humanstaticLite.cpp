@@ -13,6 +13,7 @@ void HumanStaticLite::recvRadarBytes(){
       if(stream->read() == MESSAGE_HEAD2){         //Receive header frame 2
         dataLen = stream->readBytesUntil(MESSAGE_END2, Msg, 20);
         if (dataLen > 0 && dataLen < 20){
+          Msg[dataLen - 1] = MESSAGE_END1;
           Msg[dataLen] = MESSAGE_END2;
           this->newData = true;
         }
@@ -22,7 +23,9 @@ void HumanStaticLite::recvRadarBytes(){
 }
 
 //Radar transmits data frames for display via serial port
-void HumanStaticLite::showData(){
+// Update to return the data shown
+unsigned char* HumanStaticLite::showData(){
+  static unsigned char output[22] = {MESSAGE_HEAD1, MESSAGE_HEAD2};
   if(this->newData){
     Serial.print(MESSAGE_HEAD1, HEX);
     Serial.print(' ');
@@ -33,11 +36,13 @@ void HumanStaticLite::showData(){
       sprintf(charVal, "%02X", Msg[n]);
       Serial.print(charVal);
       Serial.print(' ');
+      output[n+2] = Msg[n];
     }
     Serial.println();
     this->newData = false;
     Msg[dataLen] = {0};
   }
+  return output;
 }
 
 //Parsing data frames
@@ -118,8 +123,8 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
             showData();
             radarStatus = DETAILMESSAGE;
             static_val = Msg[4];
-            dynamic_val = Msg[5];
-            dis_static = decodeVal_func(Msg[6]);
+            dis_static = decodeVal_func(Msg[5]);
+            dynamic_val = Msg[6];
             dis_move = decodeVal_func(Msg[7]);
             speed = decodeVal_func(Msg[8],true);
             break;
@@ -154,7 +159,8 @@ void HumanStaticLite::HumanStatic_func(bool bodysign /*=false*/){
 }
 
 //Send data frame
-void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
+unsigned char* HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool cyclic /*=false*/){
+  unsigned char* output = NULL;
   if(cyclic || count < checkdata_len){
     if(cyclic || count < 1){
       stream->write(buff, len);
@@ -170,11 +176,12 @@ void HumanStaticLite::checkSetMode_func(const unsigned char* buff, int len, bool
     }
     if(count%2 == 1){
       Serial.print("Receive <--- ");
-      showData();
+      output = showData();
     }
     this->newData = false;
   }
   count++;
+  return output;
 }
 
 //Reset radar
@@ -206,7 +213,3 @@ float HumanStaticLite::decodeVal_func(int val, bool decode){
   }
   return 0;
 }
-
-
-
-
