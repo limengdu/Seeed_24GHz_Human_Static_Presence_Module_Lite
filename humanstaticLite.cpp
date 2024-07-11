@@ -197,13 +197,13 @@ void HumanStaticLite::data_printf(const unsigned char* buff, int len){
 }
 
 float HumanStaticLite::decodeVal_func(int val, bool decode){
-  if(!decode) return val*unit;   //Calculate distance
+  if(!decode) return (val * SEEED_HUMAN_UNIT);   //Calculate distance
   else{                          //Calculate speed
     if(val == 0x0A){
       return 0;
     }
-    else if(val > 0x0A) return -((val-10)*unit);   //Away speed is negative
-    else if(val < 0x0A) return (val)*unit;         //Approach speed is positive
+    else if(val > 0x0A) return -((val-10) * SEEED_HUMAN_UNIT);   //Away speed is negative
+    else if(val < 0x0A) return (val) * SEEED_HUMAN_UNIT;         //Approach speed is positive
   }
   return 0;
 }

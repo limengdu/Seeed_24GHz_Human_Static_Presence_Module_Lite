@@ -42,7 +42,7 @@
 
 #define reset_frame_len 10       //Reset data frame length
 
-#define unit          0.5        //Calculate unit steps
+#define SEEED_HUMAN_UNIT 0.5     //Calculate unit steps
 
 //Reset data frame
 const unsigned char reset_frame[10] = {0x53, 0x59, 0x01, 0x02, 0x00, 0x01, 0x0F, 0xBF, 0x54, 0x43};
